@@ -12,9 +12,9 @@ export default async function DashboardPage() {
   const { data: memberships } = await supabase
     .from('group_members')
     .select('group_id, role, groups(id, name, description, created_at, invite_code)')
-    .eq('user_id', user.id)
+    .eq('user_id', user.id) as { data: { group_id: string; role: string; groups: { id: string; name: string; description: string | null; created_at: string; invite_code: string } | null }[] | null }
 
-  const groups = memberships?.map(m => m.groups).filter(Boolean) ?? []
+  const groups = memberships?.map((m: any) => m.groups).filter(Boolean) ?? []
 
   // Fetch profile
   const { data: profile } = await supabase
