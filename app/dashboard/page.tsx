@@ -3,20 +3,26 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { signOut } from '@/app/auth/actions'
 
+type GroupRow = {
+  id: string
+  name: string
+  description: string | null
+  created_at: string
+  invite_code: string
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Fetch user's groups
   const { data: memberships } = await supabase
     .from('group_members')
     .select('group_id, role, groups(id, name, description, created_at, invite_code)')
-    .eq('user_id', user.id) as { data: { group_id: string; role: string; groups: { id: string; name: string; description: string | null; created_at: string; invite_code: string } | null }[] | null }
+    .eq('user_id', user.id) as unknown as { data: { group_id: string; role: string; groups: GroupRow | null }[] }
 
-  const groups = memberships?.map((m: any) => m.groups).filter(Boolean) ?? []
+  const groups: GroupRow[] = (memberships ?? []).map(m => m.groups).filter((g): g is GroupRow => g !== null)
 
-  // Fetch profile
   const { data: profile } = await supabase
     .from('profiles')
     .select('display_name, email')
@@ -25,7 +31,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
       <header className="border-b border-zinc-800/60 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <span className="text-xl font-bold text-white">
@@ -43,7 +48,6 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-10">
-        {/* Top bar */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-white">Your Groups</h1>
@@ -62,7 +66,6 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Groups grid */}
         {groups.length === 0 ? (
           <div className="glass rounded-2xl p-16 text-center">
             <div className="text-4xl mb-4">👥</div>
@@ -74,7 +77,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4">
-            {(groups as NonNullable<typeof groups[0]>[]).map((group: any) => (
+            {groups.map((group) => (
               <Link
                 key={group.id}
                 href={`/groups/${group.id}`}
