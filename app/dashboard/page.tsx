@@ -1,15 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { signOut } from '@/app/auth/actions'
-
-type GroupRow = {
-  id: string
-  name: string
-  description: string | null
-  created_at: string
-  invite_code: string
-}
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -18,10 +11,14 @@ export default async function DashboardPage() {
 
   const { data: memberships } = await supabase
     .from('group_members')
-    .select('group_id, role, groups(id, name, description, created_at, invite_code)')
-    .eq('user_id', user.id) as unknown as { data: { group_id: string; role: string; groups: GroupRow | null }[] }
+    .select('group_id')
+    .eq('user_id', user.id)
 
-  const groups: GroupRow[] = (memberships ?? []).map(m => m.groups).filter((g): g is GroupRow => g !== null)
+  const groupIds = (memberships ?? []).map((m: any) => m.group_id)
+
+  const { data: groups } = groupIds.length > 0
+    ? await supabase.from('groups').select('*').in('id', groupIds)
+    : { data: [] }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -52,7 +49,7 @@ export default async function DashboardPage() {
           <div>
             <h1 className="text-2xl font-bold text-white">Your Groups</h1>
             <p className="text-zinc-400 text-sm mt-1">
-              {groups.length === 0 ? 'No groups yet — create one to get started' : `${groups.length} group${groups.length === 1 ? '' : 's'}`}
+              {!groups || groups.length === 0 ? 'No groups yet — create one to get started' : `${groups.length} group${groups.length === 1 ? '' : 's'}`}
             </p>
           </div>
           <Link
@@ -66,7 +63,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {groups.length === 0 ? (
+        {!groups || groups.length === 0 ? (
           <div className="glass rounded-2xl p-16 text-center">
             <div className="text-4xl mb-4">👥</div>
             <h3 className="text-lg font-semibold text-white mb-2">No groups yet</h3>
@@ -77,7 +74,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4">
-            {groups.map((group) => (
+            {(groups as any[]).map((group) => (
               <Link
                 key={group.id}
                 href={`/groups/${group.id}`}
