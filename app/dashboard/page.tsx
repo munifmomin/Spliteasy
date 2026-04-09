@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
-  const firstName = profile?.display_name?.split(' ')[0] ?? 'there'
+  const firstName = (profile as any)?.display_name?.split(' ')[0] ?? 'there'
 
   return (
     <div className="min-h-screen">
