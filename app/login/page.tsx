@@ -65,7 +65,7 @@ function LoginForm() {
 
         <p className="text-center text-sm text-zinc-500 mt-6">
           No account yet?{' '}
-          <Link href="/signup" className="text-brand-400 hover:text-brand-300 font-semibold transition-colors">
+          <Link href={`/signup?next=${next}`} className="text-brand-400 hover:text-brand-300 font-semibold transition-colors">
             Create one free
           </Link>
         </p>
