@@ -4,24 +4,27 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next') || '/dashboard'
+  const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
     setLoading(true)
     const form = e.currentTarget
-    const email = (form.elements.namedItem('email') as HTMLInputElement).value
-    const password = (form.elements.namedItem('password') as HTMLInputElement).value
+    const email = form.elements.namedItem('email').value
+    const password = form.elements.namedItem('password').value
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { setError(error.message); setLoading(false); return }
-    router.push('/dashboard')
+    router.push(next)
     router.refresh()
   }
 
@@ -41,12 +44,12 @@ export default function LoginPage() {
             <div>
               <label className="block text-sm font-semibold text-zinc-300 mb-1.5">Email</label>
               <input name="email" type="email" required placeholder="you@example.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500/60 focus:bg-white/8 transition-all text-sm" />
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500/60 transition-all text-sm" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-300 mb-1.5">Password</label>
               <input name="password" type="password" required placeholder="Your password"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500/60 focus:bg-white/8 transition-all text-sm" />
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500/60 transition-all text-sm" />
             </div>
             {error && (
               <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
@@ -54,7 +57,7 @@ export default function LoginPage() {
               </div>
             )}
             <button type="submit" disabled={loading}
-              className="w-full bg-brand-500 hover:bg-brand-400 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all hover:scale-[1.02] text-sm mt-2 shadow-lg shadow-brand-500/20">
+              className="w-full bg-brand-500 hover:bg-brand-400 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all text-sm mt-2 shadow-lg shadow-brand-500/20">
               {loading ? 'Signing in...' : 'Sign in 👉'}
             </button>
           </form>
@@ -68,5 +71,13 @@ export default function LoginPage() {
         </p>
       </div>
     </main>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }
