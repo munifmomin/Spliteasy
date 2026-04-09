@@ -39,7 +39,7 @@ export default async function DashboardPage() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-zinc-400">{profile?.display_name ?? user.email}</span>
+            <span className="text-sm text-zinc-400">{(profile as any)?.display_name ?? user.email}</span>
             <form action={signOut}>
               <button type="submit" className="text-sm text-zinc-500 hover:text-white transition-colors">
                 Sign out
