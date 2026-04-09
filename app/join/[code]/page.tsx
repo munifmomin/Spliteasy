@@ -7,7 +7,6 @@ export default async function JoinPage({ params }: { params: { code: string } })
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect(`/login?next=/join/${params.code}`)
 
-  // Find group by invite code
   const { data: group } = await supabase
     .from('groups')
     .select('id, name')
@@ -26,7 +25,6 @@ export default async function JoinPage({ params }: { params: { code: string } })
     )
   }
 
-  // Check if already a member
   const { data: existing } = await supabase
     .from('group_members')
     .select('id')
@@ -36,7 +34,6 @@ export default async function JoinPage({ params }: { params: { code: string } })
 
   if (existing) redirect(`/groups/${group.id}`)
 
-  // Join the group
   await supabase
     .from('group_members')
     .insert({ group_id: group.id, user_id: user.id, role: 'member' })
