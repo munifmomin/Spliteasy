@@ -4,25 +4,28 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next') || '/dashboard'
+  const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
     setLoading(true)
     const form = e.currentTarget
-    const email = (form.elements.namedItem('email') as HTMLInputElement).value
-    const password = (form.elements.namedItem('password') as HTMLInputElement).value
-    const display_name = (form.elements.namedItem('display_name') as HTMLInputElement).value
+    const email = form.elements.namedItem('email').value
+    const password = form.elements.namedItem('password').value
+    const display_name = form.elements.namedItem('display_name').value
     const supabase = createClient()
     const { error } = await supabase.auth.signUp({ email, password, options: { data: { display_name } } })
     if (error) { setError(error.message); setLoading(false); return }
-    router.push('/dashboard')
+    router.push(next)
     router.refresh()
   }
 
@@ -60,7 +63,7 @@ export default function SignupPage() {
               </div>
             )}
             <button type="submit" disabled={loading}
-              className="w-full bg-brand-500 hover:bg-brand-400 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all hover:scale-[1.02] text-sm mt-2 shadow-lg shadow-brand-500/20">
+              className="w-full bg-brand-500 hover:bg-brand-400 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all text-sm mt-2 shadow-lg shadow-brand-500/20">
               {loading ? 'Creating account...' : "Let's go 🚀"}
             </button>
           </form>
@@ -68,11 +71,19 @@ export default function SignupPage() {
 
         <p className="text-center text-sm text-zinc-500 mt-6">
           Already have an account?{' '}
-          <Link href="/login" className="text-brand-400 hover:text-brand-300 font-semibold transition-colors">
+          <Link href={`/login?next=${next}`} className="text-brand-400 hover:text-brand-300 font-semibold transition-colors">
             Sign in
           </Link>
         </p>
       </div>
     </main>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupForm />
+    </Suspense>
   )
 }
