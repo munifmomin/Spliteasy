@@ -3,39 +3,33 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
-
+  * { box-sizing: border-box; }
   :root {
-    --font-body: 'DM Sans', sans-serif;
-    --font-mono: 'DM Mono', monospace;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-
-  /* Scrollbar styling */
+  body {
+    background: #0f0f14;
+  }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #52525b; }
 }
 
 @layer utilities {
   .glass {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
     backdrop-filter: blur(12px);
   }
-
   .glass-hover {
-    transition: background 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
   }
-
   .glass-hover:hover {
-    background: rgba(255,255,255,0.07);
-    border-color: rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(139,92,246,0.3);
+    transform: translateY(-1px);
   }
-
-  .text-balance {
-    text-wrap: balance;
+  .glow {
+    box-shadow: 0 0 40px rgba(139,92,246,0.15);
   }
 }

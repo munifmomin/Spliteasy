@@ -68,8 +68,8 @@ export default async function GroupPage({ params }: { params: { id: string } }) 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <span className="text-xl font-bold text-white">
-              Split<span className="text-brand-400">Easy</span>
+            <div className="flex items-center gap-2"><span>✂️</span><span className="text-xl font-bold text-white">
+              NoStrings<span className="text-brand-400">Split</span>
             </span>
           </div>
           <form action={signOut}>

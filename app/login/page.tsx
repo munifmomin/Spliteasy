@@ -14,20 +14,12 @@ export default function LoginPage() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-
     const form = e.currentTarget
     const email = (form.elements.namedItem('email') as HTMLInputElement).value
     const password = (form.elements.namedItem('password') as HTMLInputElement).value
-
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
-    }
-
+    if (error) { setError(error.message); setLoading(false); return }
     router.push('/dashboard')
     router.refresh()
   }
@@ -36,56 +28,41 @@ export default function LoginPage() {
     <main className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold text-white">
-            Split<span className="text-brand-400">Easy</span>
+          <Link href="/" className="inline-flex items-center gap-2 text-2xl font-bold text-white">
+            <span>✂️</span>
+            NoStrings<span className="text-brand-400">Split</span>
           </Link>
-          <p className="text-zinc-400 mt-2 text-sm">Sign in to your account</p>
+          <p className="text-zinc-400 mt-2 text-sm">Welcome back 👋</p>
         </div>
 
-        <div className="glass rounded-2xl p-8">
+        <div className="glass rounded-3xl p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Email</label>
-              <input
-                name="email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 transition-colors text-sm"
-              />
+              <label className="block text-sm font-semibold text-zinc-300 mb-1.5">Email</label>
+              <input name="email" type="email" required placeholder="you@example.com"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500/60 focus:bg-white/8 transition-all text-sm" />
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Password</label>
-              <input
-                name="password"
-                type="password"
-                required
-                placeholder="Your password"
-                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 transition-colors text-sm"
-              />
+              <label className="block text-sm font-semibold text-zinc-300 mb-1.5">Password</label>
+              <input name="password" type="password" required placeholder="Your password"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500/60 focus:bg-white/8 transition-all text-sm" />
             </div>
-
             {error && (
-              <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+              <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
                 {error}
               </div>
             )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-brand-500 hover:bg-brand-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors text-sm mt-2"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
+            <button type="submit" disabled={loading}
+              className="w-full bg-brand-500 hover:bg-brand-400 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all hover:scale-[1.02] text-sm mt-2 shadow-lg shadow-brand-500/20">
+              {loading ? 'Signing in...' : 'Sign in 👉'}
             </button>
           </form>
         </div>
 
         <p className="text-center text-sm text-zinc-500 mt-6">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-brand-400 hover:text-brand-300 transition-colors">
-            Create one
+          No account yet?{' '}
+          <Link href="/signup" className="text-brand-400 hover:text-brand-300 font-semibold transition-colors">
+            Create one free
           </Link>
         </p>
       </div>

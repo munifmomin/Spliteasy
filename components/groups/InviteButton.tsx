@@ -13,24 +13,12 @@ export default function InviteButton({ inviteCode, groupName }: { inviteCode: st
   }
 
   return (
-    <button
-      onClick={copy}
-      className="flex items-center gap-2 border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm"
-    >
+    <button onClick={copy}
+      className="flex items-center gap-2 border border-white/10 hover:border-brand-500/40 text-zinc-300 hover:text-white font-semibold px-4 py-2.5 rounded-xl transition-all text-sm hover:bg-brand-500/10">
       {copied ? (
-        <>
-          <svg className="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          Copied!
-        </>
+        <><span>✅</span> Copied!</>
       ) : (
-        <>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-          Invite link
-        </>
+        <><span>🔗</span> Invite friends</>
       )}
     </button>
   )
